@@ -4,11 +4,13 @@ import com.example.mango.authorization.AuthorizationViewModel
 import com.example.mango.confirmcode.ConfirmCodeViewModel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import dagger.Binds
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -36,7 +38,7 @@ class NetworkModule {
     ): Api {
         val retrofit = Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl("https://plannerok.ru/api/v1/users/")
+            .baseUrl("https://plannerok.ru")
             .addConverterFactory(gsonConverterFactory)
             .build()
         return retrofit.create(Api::class.java)
@@ -55,7 +57,20 @@ class NetworkModule {
 
     @Provides
     fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient().newBuilder().build()
+        val client = OkHttpClient().newBuilder().build()
+//        client.interceptors().add(object: Interceptor {
+//            override fun intercept(chain: Interceptor.Chain): Response {
+//                val original: Request = chain.request()
+//                val request: Request = original.newBuilder()
+//                    .header("Accept", "application/json")
+//                    .header("Authorization", "auth-token")
+//                    .method(original.method(), original.body())
+//                    .build()
+//                return chain.proceed(request)
+//            }
+//
+//        })
+        return client
     }
 }
 

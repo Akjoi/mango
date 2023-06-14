@@ -15,3 +15,11 @@ data class ConfirmCodeResponse(
     @SerializedName("is_user_exists")
     val isUserExist: Boolean,
 )
+
+data class ConfirmCodeRequest(
+    @SerializedName("phone")
+    val phone: String,
+
+    @SerializedName("code")
+    val code: String,
+)

@@ -5,11 +5,12 @@
     <string name="authorization_fragment">Authorization Fragment</string>
     <string name="code_verifier_fragment">Code Verifier Fragment</string>
     <string name="registration_fragment">Registration Fragment</string>
-    <string name="next">Next</string>
+    <string name="next">Далее</string>
     <string name="previous">Previous</string>
 
     <string name="phone_error">Некорректный номер телефона</string>
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="code_error">Неверный код подтверждения</string>
+
+    <string name="code_verifier">Пожалуйста введите код подверждения который мы отправили вам на номер</string>
     <string name="hint_code_verifier">Код</string>
 </resources>

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.mango.R
 import com.example.mango.authorization.AuthorizationViewModel
 import com.example.mango.confirmcode.ConfirmCodeViewModel
@@ -25,10 +26,20 @@ class CodeVerifierFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val model = ViewModelProvider(requireActivity())[AuthorizationViewModel::class.java]
+        val model  = ViewModelProvider(
+            requireActivity(),
+            AuthorizationViewModel.Factory(
+                context = this.requireContext(),
+                navController = findNavController()
+            )
+        )[AuthorizationViewModel::class.java]
         val code = view.findViewById<EditText>(R.id.code)
         val btn = view.findViewById<Button>(R.id.next)
         btn?.setOnClickListener {
+            if (code.text.toString().length < 6 ) {
+                code.error = getString(R.string.code_error)
+                return@setOnClickListener
+            }
             model.confirmCode(code.text.toString())
         }
     }

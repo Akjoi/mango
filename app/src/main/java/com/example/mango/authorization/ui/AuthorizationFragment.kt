@@ -1,6 +1,8 @@
 package com.example.mango.authorization.ui
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +27,13 @@ class AuthorizationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(requireActivity())[AuthorizationViewModel::class.java]
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            AuthorizationViewModel.Factory(
+                context = this.requireContext(),
+                navController = findNavController()
+            )
+        )[AuthorizationViewModel::class.java]
         _binding = AuthorizationFragmentBinding.inflate(inflater, container, false)
 
 
@@ -51,7 +59,6 @@ class AuthorizationFragment : Fragment() {
             adapter.notifyDataSetChanged()
         }
 
-        dropdown.setSelection(viewModel?.localeIndex ?: 0)
 
         return binding.root
 
@@ -64,30 +71,32 @@ class AuthorizationFragment : Fragment() {
             binding.phone.setText(it)
         }
 
-//        binding.phone.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//
-//            }
-//
-//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//
-//            }
-//
-//            override fun afterTextChanged(p0: Editable?) {
-//                Log.i("AAAAA", p0.toString())
-//            }
-//
-//        })
+        viewModel?.localeIndex?.observe(viewLifecycleOwner) {
+            binding.spinner.setSelection(it)
+        }
 
+        binding.phone.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                viewModel?.onTextChange(binding.phone.unMasked)
+            }
+
+        })
 
 
         binding.next.setOnClickListener {
-            if (!viewModel?.authorize(binding.phone.unMasked)!!) {
+            if (binding.phone.unMasked.length < 11) {
                 binding.phone.error = getString(R.string.phone_error)
                 return@setOnClickListener
             }
-
-            findNavController().navigate(R.id.auth_to_code)
+            viewModel?.authorize(binding.phone.unMasked)
         }
     }
 

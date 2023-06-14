@@ -15,11 +15,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="parent"
         android:layout_height="match_parent"
-        android:text="@string/hint_code_verifier" />
+        android:text="@string/code_verifier" />
 
     <EditText
+        android:maxLength="6"
+        android:inputType="number"
         android:id="@+id/code"
-        android:hint="WEQ"
+        android:hint="@string/hint_code_verifier"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
