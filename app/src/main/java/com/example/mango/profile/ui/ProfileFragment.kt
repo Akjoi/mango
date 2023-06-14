@@ -40,7 +40,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         model?.user?.observe(viewLifecycleOwner) {
-            it.apply {
+            it?.apply {
                 binding.name.text = name
                 binding.phone.text = phone
                 binding.username.text = username
@@ -52,6 +52,7 @@ class ProfileFragment : Fragment() {
                 binding.created.text = created
                 binding.completedTask.text = completedTask.toString()
             }
+
         }
 
         binding.changeProfile.setOnClickListener {

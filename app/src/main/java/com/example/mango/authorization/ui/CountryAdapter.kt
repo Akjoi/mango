@@ -1,5 +1,6 @@
 package com.example.mango.authorization.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,9 @@ class CountryAdapter(
         return getCustomView(position, convertView, parent)
     }
 
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        return getSelectedView(position, convertView, parent)
+    }
 
     private fun getCustomView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val row: View = inflater.inflate(resLocal, parent, false)
@@ -38,6 +42,18 @@ class CountryAdapter(
 
         val dialCode = row.findViewById(R.id.dial_code) as TextView
         dialCode.text = currentCountry.dial_code
+        return row
+    }
+
+    @SuppressLint("MissingInflatedId")
+    private fun getSelectedView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        val row: View = inflater.inflate(R.layout.country_selected_item, parent, false)
+        val currentCountry = countries[position]
+
+        val countryName = row.findViewById(R.id.selected_country_name) as TextView
+        countryName.text = currentCountry.name
+
+
         return row
     }
 }

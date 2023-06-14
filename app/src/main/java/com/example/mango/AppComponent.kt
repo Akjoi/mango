@@ -15,10 +15,9 @@ import com.google.gson.GsonBuilder
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -46,11 +45,6 @@ class AppModule(private val ctx: Context) {
 
 @Module
 class NetworkModule {
-
-
-//    Лучше брать Base URL из ресурсов
-//    И на реальном проекте я бы укоротил его до https://plannerok.ru/api
-//    Поскольку там и версии могут меняться и остальной путь. Но в тестовом всё идёт на users
 
     @Provides
     fun provideApi(
@@ -85,18 +79,33 @@ class NetworkModule {
                         .addHeader("Accept", "application/json")
                         .addHeader("Authorization", "Bearer ${preferences.getString(AT, "")}")
                         .build()
-                    Log.i(TAG, request.headers().toString())
+                    Log.i(TAG, request.headers.toString())
                     Log.i(TAG, request.toString())
                     var response = proceed(
                         request
                     )
+                    Log.i(TAG, preferences.getString(AT, ""))
 
                     Log.i(TAG, response.toString())
-                    if (response.code() == 401) {
+                    if (response.code == 401) {
                         preferences.remove(AT)
 
+
+                        val jsonRequest = "{refreshToken: ${preferences.getString(RT, "")}}"
+                        val JSON = "application/json; charset=utf-8".toMediaType()
+
+
+                        val refreshRequest = request()
+                            .newBuilder()
+                            .post(
+                                jsonRequest
+                                    .toRequestBody(JSON)
+                            )
+                            .build()
+                        val refreshResponse = proceed(refreshRequest).body.toString()
+                        Log.i(TAG + " Refresh", refreshResponse.toString())
 //                        val tokens = api.refreshToken(RefreshTokenRequest(refreshToken = preferences.getString(RT, ""))).body()
-//
+
 //                        if (tokens != null) {
 //                            preferences.putString(AT, tokens.accessToken)
 //                            preferences.putString(RT, tokens.refreshToken)
