@@ -4,8 +4,11 @@ import android.content.Context
 import android.util.Log
 import com.example.mango.authorization.AuthorizationViewModel
 import com.example.mango.authorization.data.AT
+import com.example.mango.authorization.data.RT
 import com.example.mango.authorization.data.TAG
+import com.example.mango.authorization.entities.RefreshTokenRequest
 import com.example.mango.confirmcode.ConfirmCodeViewModel
+import com.example.mango.registration.entities.RegistrationRequest
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Component
@@ -27,11 +30,7 @@ interface AppComponent {
 }
 
 @Module(includes = [NetworkModule::class])
-class AppModule {}
-
-
-@Module
-class PreferencesModule(private val ctx: Context) {
+class AppModule(private val ctx: Context) {
     @Provides
     fun provideSecurePreferences(ctx: Context): SecurePreferences {
         return SecurePreferences(ctx)
@@ -41,10 +40,9 @@ class PreferencesModule(private val ctx: Context) {
     fun provideContext(): Context {
         return ctx
     }
-
 }
 
-@Module(includes = [PreferencesModule::class])
+@Module
 class NetworkModule {
 
 
@@ -76,26 +74,51 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideOkHttpClient(preferences: SecurePreferences): OkHttpClient {
-        val client = OkHttpClient().newBuilder().build()
-        client.interceptors().add(object: Interceptor {
-            override fun intercept(chain: Interceptor.Chain): Response {
-                val original: Request = chain.request()
-                val request: Request = original.newBuilder()
-                    .header("Accept", "application/json")
-                    .header("Authorization", "Bearer ${preferences.getString(AT, "")}" )
-                    .method(original.method(), original.body())
-                    .build()
-                Log.i(TAG, request.toString())
-                return chain.proceed(request)
-            }
+    fun provideOkHttpClient(api: Api, preferences: SecurePreferences): OkHttpClient {
+        val client = OkHttpClient().newBuilder().addInterceptor(
+            object : Interceptor {
+                override fun intercept(chain: Interceptor.Chain): Response = chain.run {
+                    val request = request()
+                        .newBuilder()
+                        .addHeader("Accept", "application/json")
+                        .addHeader("Authorization", "Bearer ${preferences.getString(AT, "")}")
+                        .build()
+                    Log.i(TAG, request.headers().toString())
+                    Log.i(TAG, request.toString())
+                    var response = proceed(
+                        request
+                    )
 
-        })
+                    Log.i(TAG, response.toString())
+                    if (response.code() == 401) {
+                        preferences.remove(AT)
+
+                        val tokens = api.refreshToken(RefreshTokenRequest(refreshToken = preferences.getString(RT, ""))).body()
+
+                        if (tokens != null) {
+                            preferences.putString(AT, tokens.accessToken)
+                            preferences.putString(RT, tokens.refreshToken)
+
+                            response = proceed(
+                                request()
+                                    .newBuilder()
+                                    .addHeader("Accept", "application/json")
+                                    .addHeader("Authorization", "Bearer ${tokens.accessToken}")
+                                    .build()
+                            )
+                        }
+                    }
+
+                    response
+
+
+                }
+            }
+        ).build()
         return client
     }
 
 }
-
 
 
 //@Module

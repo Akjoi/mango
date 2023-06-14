@@ -2,6 +2,8 @@ package com.example.mango
 
 import com.example.mango.authorization.entities.CodeRequest
 import com.example.mango.authorization.entities.CodeResponse
+import com.example.mango.authorization.entities.RefreshTokenRequest
+import com.example.mango.authorization.entities.RefreshTokenResponse
 import com.example.mango.confirmcode.entities.ConfirmCodeRequest
 import com.example.mango.confirmcode.entities.ConfirmCodeResponse
 import com.example.mango.registration.entities.RegistrationRequest
@@ -19,4 +21,7 @@ interface Api {
 
     @POST("/api/v1/users/register/")
     suspend fun registerUser(@Body registrationRequest: RegistrationRequest): Response<RegistrationResponse>
+
+    @POST("/api/v1/users/refresh-token/")
+    fun refreshToken(@Body refreshTokenRequest: RefreshTokenRequest): Response<RefreshTokenResponse>
 }
