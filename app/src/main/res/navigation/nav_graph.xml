@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/authorization_fragment">
+
+    <fragment
+        android:id="@+id/authorization_fragment"
+        android:name="com.example.mango.authorization.ui.AuthorizationFragment"
+        android:label="@string/authorization_fragment"
+        tools:layout="@layout/authorization_fragment" >
+
+        <action
+            android:id="@+id/auth_to_code"
+            app:destination="@id/code_verifier_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/code_verifier_fragment"
+        android:name="com.example.mango.confirmcode.ui.CodeVerifierFragment"
+        android:label="@string/code_verifier_fragment"
+        tools:layout="@layout/fragment_code_verifier" >
+
+        <action
+            android:id="@+id/code_to_register"
+            app:destination="@id/registration_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registration_fragment"
+        android:name="com.example.mango.RegistrationFragment"
+        android:label="@string/registration_fragment"
+        tools:layout="@layout/registration_fragment" >
+
+    </fragment>
+</navigation>
