@@ -44,6 +44,9 @@ class AuthorizationViewModel(private val navController: NavController, context: 
     private val _loading: MutableLiveData<Boolean> = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
 
+    private val _error: MutableLiveData<Boolean> = MutableLiveData(false)
+    val error: LiveData<Boolean> = _error
+
     private val _localeIndex: MutableLiveData<Int> = MutableLiveData(0)
     val localeIndex: LiveData<Int> = _localeIndex
 
@@ -62,14 +65,16 @@ class AuthorizationViewModel(private val navController: NavController, context: 
     }
 
     fun authorize(phone: String) {
-
         viewModelScope.launch {
             _loading.value = true
-            val result = repo.getCode("+$phone") ?: return@launch
+            val result = repo.getCode("+$phone")
             _loading.value = false
-
-            if (!result.is_success) return@launch
+            if (result == null || !result.is_success) {
+                _error.value = true
+                return@launch
+            }
             unmaskedPhone = phone
+            _error.value = false
             navController.navigate(R.id.auth_to_code)
         }
     }
@@ -82,29 +87,40 @@ class AuthorizationViewModel(private val navController: NavController, context: 
 
         viewModelScope.launch {
             _loading.value = true
-            val result = repo.confirmCode("+$unmaskedPhone", code) ?: return@launch
+            val result = repo.confirmCode("+$unmaskedPhone", code)
             _loading.value = false
-            result.let {
-                if (!it.isUserExist) navController.navigate(R.id.code_to_register)
-                else {
-                    navController.navigate(R.id.code_to_profile)
-                    onCleared()
-                }
+            if (result == null) {
+                _error.value = true
+                return@launch
+            }
+            if (!result.isUserExist) {
+                _error.value = false
+                navController.navigate(R.id.code_to_register)
+            } else {
+                _error.value = false
+                navController.navigate(R.id.code_to_profile)
+                onCleared()
             }
         }
-
-
-
     }
+
 
     fun registerUser(name: String, userName: String) {
         viewModelScope.launch {
             _loading.value = true
-            val result = repo.registerUser("+$unmaskedPhone", name, userName) ?: return@launch
-            navController.navigate(R.id.register_to_profile)
+            val result = repo.registerUser("+$unmaskedPhone", name, userName)
             _loading.value = false
+
+            if (result == null) {
+                _error.value = true
+                return@launch
+            }
+            _error.value = false
+            onCleared()
+            navController.navigate(R.id.register_to_profile)
         }
     }
+
     fun onTextChange(phone: String) {
         val index = _countries.value!!.indexOfFirst { it.dial_code == "+$phone" }
         if (index != -1) {

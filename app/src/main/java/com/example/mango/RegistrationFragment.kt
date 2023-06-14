@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.mango.authorization.AuthorizationViewModel
@@ -32,6 +33,10 @@ class RegistrationFragment : Fragment() {
 
         binding.next.setOnClickListener {
             model.registerUser(binding.name.text.toString(), binding.username.text.toString())
+        }
+
+        model.error.observe(viewLifecycleOwner) {
+            binding.error.isVisible = it
         }
 
         binding.phone.text = model.unmaskedPhone

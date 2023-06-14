@@ -31,7 +31,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
-
+    <TextView
+        android:layout_marginTop="@dimen/fab_margin"
+        android:visibility="gone"
+        android:id="@+id/error"
+        android:text="@string/network_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/code" />
     <Button
         android:layout_marginTop="@dimen/fab_margin"
         android:id="@+id/next"
@@ -40,5 +49,5 @@
         android:text="@string/confirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/code" />
+        app:layout_constraintTop_toBottomOf="@+id/error" />
 </androidx.constraintlayout.widget.ConstraintLayout>

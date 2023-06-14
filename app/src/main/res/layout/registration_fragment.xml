@@ -7,17 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".RegistrationFragment">
 
-
     <TextView
-        android:id="@+id/phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/next"
-        />
-    <TextView
+        android:layout_marginTop="128dp"
         android:id="@+id/phone_hint"
         android:text="@string/phone_hint"
         android:layout_width="wrap_content"
@@ -25,38 +16,70 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/phone"
         />
 
+    <TextView
+        android:layout_marginTop="@dimen/fab_margin"
+        android:id="@+id/phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/phone_hint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        />
+
+
     <EditText
+        android:layout_marginTop="@dimen/fab_margin"
+        android:minWidth="250dp"
+        android:padding="16dp"
         android:id="@+id/name"
         android:hint="@string/name_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/phone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/phone_hint"
+        android:background="@drawable/edittext_modified_states"
+
         />
 
     <EditText
+        android:layout_marginTop="@dimen/fab_margin"
+        android:minWidth="250dp"
+        android:padding="16dp"
         android:id="@+id/username"
         android:hint="@string/user_name_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/name"
+        android:background="@drawable/edittext_modified_states"
         />
 
+    <TextView
+        android:layout_marginTop="@dimen/fab_margin"
+        android:visibility="gone"
+        android:id="@+id/error"
+        android:text="@string/network_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
+
     <Button
+        android:layout_marginTop="@dimen/fab_margin"
+
         android:id="@+id/next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/previous"
+        android:text="@string/register"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/error"
+
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

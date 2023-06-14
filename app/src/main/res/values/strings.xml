@@ -13,6 +13,7 @@
     <string name="register">Зарегистрироваться</string>
     <string name="previous">Previous</string>
 
+    <string name="network_error">Произошла непредвиденная ошибка</string>
     <string name="phone_error">Некорректный номер телефона</string>
     <string name="code_error">Неверный код</string>
 
@@ -21,8 +22,8 @@
 
 
     <string name="phone_hint">Телефон</string>
-    <string name="name_hint">Ваше имя</string>
-    <string name="user_name_hint">Ваш username</string>
+    <string name="name_hint">Имя</string>
+    <string name="user_name_hint">Username</string>
 
 
     <string name="phone">Телефон</string>

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Spinner
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -73,6 +74,10 @@ class AuthorizationFragment : Fragment() {
 
         viewModel?.localeIndex?.observe(viewLifecycleOwner) {
             binding.spinner.setSelection(it)
+        }
+
+        viewModel?.error?.observe(viewLifecycleOwner) {
+            binding.error.isVisible = it
         }
 
         binding.phone.addTextChangedListener(object : TextWatcher {
