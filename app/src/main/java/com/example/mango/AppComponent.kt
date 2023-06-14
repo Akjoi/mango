@@ -8,6 +8,7 @@ import com.example.mango.authorization.data.RT
 import com.example.mango.authorization.data.TAG
 import com.example.mango.authorization.entities.RefreshTokenRequest
 import com.example.mango.confirmcode.ConfirmCodeViewModel
+import com.example.mango.profile.ProfileViewModel
 import com.example.mango.registration.entities.RegistrationRequest
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -27,6 +28,7 @@ import javax.inject.Singleton
 interface AppComponent {
     fun inject(authorizationViewModel: AuthorizationViewModel)
     fun inject(confirmCodeViewModel: ConfirmCodeViewModel)
+    fun inject(profileViewModel: ProfileViewModel)
 }
 
 @Module(includes = [NetworkModule::class])
@@ -74,7 +76,7 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideOkHttpClient(api: Api, preferences: SecurePreferences): OkHttpClient {
+    fun provideOkHttpClient( preferences: SecurePreferences): OkHttpClient {
         val client = OkHttpClient().newBuilder().addInterceptor(
             object : Interceptor {
                 override fun intercept(chain: Interceptor.Chain): Response = chain.run {
@@ -93,20 +95,20 @@ class NetworkModule {
                     if (response.code() == 401) {
                         preferences.remove(AT)
 
-                        val tokens = api.refreshToken(RefreshTokenRequest(refreshToken = preferences.getString(RT, ""))).body()
-
-                        if (tokens != null) {
-                            preferences.putString(AT, tokens.accessToken)
-                            preferences.putString(RT, tokens.refreshToken)
-
-                            response = proceed(
-                                request()
-                                    .newBuilder()
-                                    .addHeader("Accept", "application/json")
-                                    .addHeader("Authorization", "Bearer ${tokens.accessToken}")
-                                    .build()
-                            )
-                        }
+//                        val tokens = api.refreshToken(RefreshTokenRequest(refreshToken = preferences.getString(RT, ""))).body()
+//
+//                        if (tokens != null) {
+//                            preferences.putString(AT, tokens.accessToken)
+//                            preferences.putString(RT, tokens.refreshToken)
+//
+//                            response = proceed(
+//                                request()
+//                                    .newBuilder()
+//                                    .addHeader("Accept", "application/json")
+//                                    .addHeader("Authorization", "Bearer ${tokens.accessToken}")
+//                                    .build()
+//                            )
+//                        }
                     }
 
                     response

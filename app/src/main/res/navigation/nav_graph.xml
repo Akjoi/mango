@@ -45,8 +45,19 @@
         android:id="@+id/profile_fragment"
         android:name="com.example.mango.profile.ui.ProfileFragment"
         android:label="@string/profile_fragment"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile"
+        >
+        <action
+            android:id="@+id/profile_to_change"
+            app:destination="@id/change_profile" />
 
+    </fragment>
+
+    <fragment
+        android:id="@+id/change_profile"
+        android:name="com.example.mango.profile.ui.ChangeProfile"
+        android:label="@string/change_profile_fragment"
+        tools:layout="@layout/fragment_change_profile" >
 
     </fragment>
 </navigation>
