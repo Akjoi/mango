@@ -25,6 +25,10 @@
         <action
             android:id="@+id/code_to_register"
             app:destination="@id/registration_fragment" />
+
+        <action
+            android:id="@+id/code_to_profile"
+            app:destination="@id/profile_fragment" />
     </fragment>
 
     <fragment
@@ -32,6 +36,17 @@
         android:name="com.example.mango.RegistrationFragment"
         android:label="@string/registration_fragment"
         tools:layout="@layout/registration_fragment" >
+        <action
+            android:id="@+id/register_to_profile"
+            app:destination="@id/profile_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profile_fragment"
+        android:name="com.example.mango.profile.ui.ProfileFragment"
+        android:label="@string/profile_fragment"
+        tools:layout="@layout/fragment_profile" >
+
 
     </fragment>
 </navigation>

@@ -1,6 +1,10 @@
 package com.example.mango
 
+import android.content.Context
+import android.util.Log
 import com.example.mango.authorization.AuthorizationViewModel
+import com.example.mango.authorization.data.AT
+import com.example.mango.authorization.data.TAG
 import com.example.mango.confirmcode.ConfirmCodeViewModel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -13,6 +17,7 @@ import okhttp3.Request
 import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 
 @Component(modules = [AppModule::class])
@@ -24,7 +29,22 @@ interface AppComponent {
 @Module(includes = [NetworkModule::class])
 class AppModule {}
 
+
 @Module
+class PreferencesModule(private val ctx: Context) {
+    @Provides
+    fun provideSecurePreferences(ctx: Context): SecurePreferences {
+        return SecurePreferences(ctx)
+    }
+
+    @Provides
+    fun provideContext(): Context {
+        return ctx
+    }
+
+}
+
+@Module(includes = [PreferencesModule::class])
 class NetworkModule {
 
 
@@ -34,7 +54,7 @@ class NetworkModule {
 
     @Provides
     fun provideApi(
-        okHttpClient: OkHttpClient, gsonConverterFactory: GsonConverterFactory
+        okHttpClient: OkHttpClient, gsonConverterFactory: GsonConverterFactory,
     ): Api {
         val retrofit = Retrofit.Builder()
             .client(okHttpClient)
@@ -56,23 +76,27 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(preferences: SecurePreferences): OkHttpClient {
         val client = OkHttpClient().newBuilder().build()
-//        client.interceptors().add(object: Interceptor {
-//            override fun intercept(chain: Interceptor.Chain): Response {
-//                val original: Request = chain.request()
-//                val request: Request = original.newBuilder()
-//                    .header("Accept", "application/json")
-//                    .header("Authorization", "auth-token")
-//                    .method(original.method(), original.body())
-//                    .build()
-//                return chain.proceed(request)
-//            }
-//
-//        })
+        client.interceptors().add(object: Interceptor {
+            override fun intercept(chain: Interceptor.Chain): Response {
+                val original: Request = chain.request()
+                val request: Request = original.newBuilder()
+                    .header("Accept", "application/json")
+                    .header("Authorization", "Bearer ${preferences.getString(AT, "")}" )
+                    .method(original.method(), original.body())
+                    .build()
+                Log.i(TAG, request.toString())
+                return chain.proceed(request)
+            }
+
+        })
         return client
     }
+
 }
+
+
 
 //@Module
 //interface AppBindsModule {

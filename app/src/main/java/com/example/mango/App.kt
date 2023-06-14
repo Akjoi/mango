@@ -13,7 +13,7 @@ class App: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        _appComponent = DaggerAppComponent.create()
+        _appComponent = DaggerAppComponent.builder().preferencesModule(PreferencesModule(this)).build()
     }
 }
 

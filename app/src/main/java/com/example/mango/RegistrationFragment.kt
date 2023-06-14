@@ -5,35 +5,41 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.example.mango.authorization.AuthorizationViewModel
 import com.example.mango.databinding.RegistrationFragmentBinding
 
-/**
- * A simple [Fragment] subclass as the second destination in the navigation.
- */
+
 class RegistrationFragment : Fragment() {
 
-private var _binding: RegistrationFragmentBinding? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var _binding: RegistrationFragmentBinding? = null
+
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        val model = ViewModelProvider(
+            requireActivity(),
+            AuthorizationViewModel.Factory(
+                context = this.requireContext(),
+                navController = findNavController()
+            )
+        )[AuthorizationViewModel::class.java]
+        _binding = RegistrationFragmentBinding.inflate(inflater, container, false)
 
-      _binding = RegistrationFragmentBinding.inflate(inflater, container, false)
-      return binding.root
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.buttonSecond.setOnClickListener {
+        binding.next.setOnClickListener {
+            model.registerUser(binding.name.text.toString(), binding.username.text.toString())
         }
+
+        binding.phone.text = model.unmaskedPhone
+        return binding.root
+
     }
-override fun onDestroyView() {
+
+    override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }

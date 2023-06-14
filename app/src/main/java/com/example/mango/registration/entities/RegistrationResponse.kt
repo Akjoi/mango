@@ -1,8 +1,8 @@
-package com.example.mango.confirmcode.entities
+package com.example.mango.registration.entities
 
 import com.google.gson.annotations.SerializedName
 
-data class ConfirmCodeResponse(
+data class RegistrationResponse(
     @SerializedName("refresh_token")
     val refreshToken: String,
 
@@ -11,15 +11,16 @@ data class ConfirmCodeResponse(
 
     @SerializedName("user_id")
     val userId: Int,
-
-    @SerializedName("is_user_exists")
-    val isUserExist: Boolean,
 )
 
-data class ConfirmCodeRequest(
+
+data class RegistrationRequest(
     @SerializedName("phone")
     val phone: String,
 
-    @SerializedName("code")
-    val code: String,
+    @SerializedName("name")
+    val name: String,
+
+    @SerializedName("username")
+    val userName: String,
 )

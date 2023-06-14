@@ -38,7 +38,8 @@ class AuthorizationViewModel(private val navController: NavController, context: 
     private val _phone: MutableLiveData<String> = MutableLiveData("")
     val phone: LiveData<String> = _phone
 
-    private var unmaskedPhone = ""
+    var unmaskedPhone = ""
+        private set
 
     private val _loading: MutableLiveData<Boolean> = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
@@ -48,7 +49,7 @@ class AuthorizationViewModel(private val navController: NavController, context: 
 
     init {
         context.appComponent.inject(this)
-
+        Log.i("ViewModel Init", this.hashCode().toString())
 
         val typeToken = object : TypeToken<List<Country>>() {}.type
         val countries = gson.fromJson<List<Country>>(loadJSONFromAsset(context), typeToken)
@@ -78,22 +79,29 @@ class AuthorizationViewModel(private val navController: NavController, context: 
     }
 
     fun confirmCode(code: String) {
-        var result: ConfirmCodeResponse? = null
+
         viewModelScope.launch {
             _loading.value = true
-            result = repo.confirmCode("+$phone", code) ?: return@launch
+            val result = repo.confirmCode("+$unmaskedPhone", code) ?: return@launch
             _loading.value = false
-        }
-        if (result != null) {
-            if (!result!!.isUserExist) navController.navigate(R.id.code_to_register)
+            result.let {
+                if (!it.isUserExist) navController.navigate(R.id.code_to_register)
+                else navController.navigate(R.id.code_to_profile)
+            }
         }
 
 
-//        Навигация в профиль
-    //        else navController.navigate(R.id.code_to_register)
 
     }
 
+    fun registerUser(name: String, userName: String) {
+        viewModelScope.launch {
+            _loading.value = true
+            val result = repo.registerUser("+$unmaskedPhone", name, userName) ?: return@launch
+            navController.navigate(R.id.register_to_profile)
+            _loading.value = false
+        }
+    }
     fun onTextChange(phone: String) {
         val index = _countries.value!!.indexOfFirst { it.dial_code == "+$phone" }
         if (index != -1) {
