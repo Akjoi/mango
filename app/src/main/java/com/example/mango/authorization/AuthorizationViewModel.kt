@@ -86,7 +86,10 @@ class AuthorizationViewModel(private val navController: NavController, context: 
             _loading.value = false
             result.let {
                 if (!it.isUserExist) navController.navigate(R.id.code_to_register)
-                else navController.navigate(R.id.code_to_profile)
+                else {
+                    navController.navigate(R.id.code_to_profile)
+                    onCleared()
+                }
             }
         }
 

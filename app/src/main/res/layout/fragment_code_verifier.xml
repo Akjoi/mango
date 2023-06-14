@@ -8,35 +8,37 @@
     tools:context=".confirmcode.ui.CodeVerifierFragment">
 
     <TextView
+        android:layout_marginTop="128dp"
         android:id="@+id/textView"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/code_verifier"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        android:layout_height="match_parent"
-        android:text="@string/code_verifier" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:maxLength="6"
-        android:inputType="number"
+        android:padding="16dp"
+        android:layout_marginTop="@dimen/fab_margin"
         android:id="@+id/code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:hint="@string/hint_code_verifier"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:inputType="number"
+        android:maxLength="6"
+        android:background="@drawable/edittext_modified_states"
+        android:minWidth="250dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/textView"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <Button
+        android:layout_marginTop="@dimen/fab_margin"
         android:id="@+id/next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/next"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/confirm"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/code" />
 </androidx.constraintlayout.widget.ConstraintLayout>

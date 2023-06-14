@@ -8,13 +8,16 @@
     <string name="registration_fragment">Registration Fragment</string>
     <string name="change_profile_fragment">Change Profile Fragment</string>
     <string name="next">Далее</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="authorize">Авторизироваться</string>
+    <string name="register">Зарегистрироваться</string>
     <string name="previous">Previous</string>
 
     <string name="phone_error">Некорректный номер телефона</string>
-    <string name="code_error">Неверный код подтверждения</string>
+    <string name="code_error">Неверный код</string>
 
-    <string name="code_verifier">Пожалуйста введите код подверждения который мы отправили вам на номер</string>
-    <string name="hint_code_verifier">Код</string>
+    <string name="code_verifier">Введите код, который пришёл на указанный номер телефона</string>
+    <string name="hint_code_verifier">000000</string>
 
 
     <string name="phone_hint">Телефон</string>

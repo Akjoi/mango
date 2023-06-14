@@ -24,8 +24,8 @@ class AuthorizationRepository @Inject constructor(private val api: Api, private 
     suspend fun confirmCode(phone: String, code: String): ConfirmCodeResponse? {
         val result = api.confirmCode(ConfirmCodeRequest(phone=phone, code = code)).body()
         if (result != null && result.isUserExist) {
-            prefs.putString(AT, result.accessToken)
-            prefs.putString(RT, result.refreshToken)
+ //           prefs.putString(AT, result.accessToken)
+//          prefs.putString(RT, result.refreshToken)
         }
         return result
     }

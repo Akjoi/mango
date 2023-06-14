@@ -6,10 +6,7 @@ import com.example.mango.authorization.AuthorizationViewModel
 import com.example.mango.authorization.data.AT
 import com.example.mango.authorization.data.RT
 import com.example.mango.authorization.data.TAG
-import com.example.mango.authorization.entities.RefreshTokenRequest
-import com.example.mango.confirmcode.ConfirmCodeViewModel
 import com.example.mango.profile.ProfileViewModel
-import com.example.mango.registration.entities.RegistrationRequest
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Component
@@ -20,13 +17,11 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 
 @Component(modules = [AppModule::class])
 interface AppComponent {
     fun inject(authorizationViewModel: AuthorizationViewModel)
-    fun inject(confirmCodeViewModel: ConfirmCodeViewModel)
     fun inject(profileViewModel: ProfileViewModel)
 }
 
@@ -88,7 +83,7 @@ class NetworkModule {
 
                     Log.i(TAG, response.toString())
                     if (response.code == 401) {
-                        preferences.remove(AT)
+//                        preferences.remove(AT)
 
 
                         val jsonRequest = "{refreshToken: ${preferences.getString(RT, "")}}"
@@ -101,9 +96,12 @@ class NetworkModule {
                                 jsonRequest
                                     .toRequestBody(JSON)
                             )
+                            .url("https://plannerok.ru/api/v1/users/refresh-token/")
                             .build()
-                        val refreshResponse = proceed(refreshRequest).body.toString()
-                        Log.i(TAG + " Refresh", refreshResponse.toString())
+                        response.close()
+                        val refreshResponse = proceed(refreshRequest)
+                        Log.i(TAG + " Refresh", refreshResponse.body?.string().toString())
+                        // {"detail":"Missing access token","body":"Missing access token"}
 //                        val tokens = api.refreshToken(RefreshTokenRequest(refreshToken = preferences.getString(RT, ""))).body()
 
 //                        if (tokens != null) {

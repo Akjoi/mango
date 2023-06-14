@@ -11,10 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.mango.R
 import com.example.mango.authorization.AuthorizationViewModel
-import com.example.mango.confirmcode.ConfirmCodeViewModel
 
 class CodeVerifierFragment : Fragment() {
-    private var _binding: CodeVerifierFragment? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
