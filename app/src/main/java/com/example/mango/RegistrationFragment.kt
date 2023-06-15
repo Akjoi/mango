@@ -39,6 +39,10 @@ class RegistrationFragment : Fragment() {
             binding.error.isVisible = it
         }
 
+        model.loading.observe(viewLifecycleOwner) {
+            binding.pBar.isVisible = it
+        }
+
         binding.phone.text = model.unmaskedPhone
         return binding.root
 

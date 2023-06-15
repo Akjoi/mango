@@ -1,6 +1,5 @@
 package com.example.mango.authorization
 
-import android.app.Application
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
@@ -10,7 +9,6 @@ import com.example.mango.R
 import com.example.mango.appComponent
 import com.example.mango.authorization.data.AuthorizationRepository
 import com.example.mango.authorization.entities.Country
-import com.example.mango.confirmcode.entities.ConfirmCodeResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
@@ -116,8 +114,8 @@ class AuthorizationViewModel(private val navController: NavController, context: 
                 return@launch
             }
             _error.value = false
-            onCleared()
             navController.navigate(R.id.register_to_profile)
+            onCleared()
         }
     }
 

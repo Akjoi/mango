@@ -60,7 +60,6 @@ class AuthorizationFragment : Fragment() {
             adapter.notifyDataSetChanged()
         }
 
-
         return binding.root
 
     }
@@ -78,6 +77,10 @@ class AuthorizationFragment : Fragment() {
 
         viewModel?.error?.observe(viewLifecycleOwner) {
             binding.error.isVisible = it
+        }
+
+        viewModel?.loading?.observe(viewLifecycleOwner) {
+            binding.pBar.isVisible = it
         }
 
         binding.phone.addTextChangedListener(object : TextWatcher {
