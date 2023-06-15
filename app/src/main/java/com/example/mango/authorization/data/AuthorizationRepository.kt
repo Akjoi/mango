@@ -12,27 +12,33 @@ import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val AT = "ACCESS_TOKEN"
-const val RT = "REFRESH_TOKEN"
+const val AT = "access_token"
+const val JSON = "application/json"
+const val RT = "refresh_token"
 const val TAG = "DEBUG_MANGO"
-class AuthorizationRepository @Inject constructor(private val api: Api, private val prefs: SecurePreferences) {
+
+class AuthorizationRepository @Inject constructor(
+    private val api: Api,
+    private val prefs: SecurePreferences
+) {
 
     suspend fun getCode(phone: String): CodeResponse? {
         return api.getCode(CodeRequest(phone = phone)).body()
     }
 
     suspend fun confirmCode(phone: String, code: String): ConfirmCodeResponse? {
-        val result = api.confirmCode(ConfirmCodeRequest(phone=phone, code = code)).body()
+        val result = api.confirmCode(ConfirmCodeRequest(phone = phone, code = code)).body()
         if (result != null && result.isUserExist) {
- //           prefs.putString(AT, result.accessToken)
-//          prefs.putString(RT, result.refreshToken)
+            prefs.putString(AT, result.accessToken)
+            prefs.putString(RT, result.refreshToken)
         }
         return result
     }
 
     suspend fun registerUser(phone: String, name: String, userName: String): RegistrationResponse? {
         val result =
-            api.registerUser(RegistrationRequest(phone=phone, name = name, userName = userName)).body()
+            api.registerUser(RegistrationRequest(phone = phone, name = name, userName = userName))
+                .body()
         if (result != null) {
             prefs.putString(AT, result.accessToken)
             prefs.putString(RT, result.refreshToken)

@@ -1,11 +1,10 @@
 package com.example.mango
 
 import android.content.Context
-import android.util.Log
 import com.example.mango.authorization.AuthorizationViewModel
 import com.example.mango.authorization.data.AT
+import com.example.mango.authorization.data.JSON
 import com.example.mango.authorization.data.RT
-import com.example.mango.authorization.data.TAG
 import com.example.mango.profile.ProfileViewModel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -15,6 +14,7 @@ import dagger.Provides
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -22,6 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Component(modules = [AppModule::class])
 interface AppComponent {
     fun inject(authorizationViewModel: AuthorizationViewModel)
+    fun inject(mainActivity: MainActivity)
     fun inject(profileViewModel: ProfileViewModel)
 }
 
@@ -65,7 +66,7 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideOkHttpClient( preferences: SecurePreferences): OkHttpClient {
+    fun provideOkHttpClient(preferences: SecurePreferences): OkHttpClient {
         val client = OkHttpClient().newBuilder().addInterceptor(
             object : Interceptor {
                 override fun intercept(chain: Interceptor.Chain): Response = chain.run {
@@ -74,48 +75,50 @@ class NetworkModule {
                         .addHeader("Accept", "application/json")
                         .addHeader("Authorization", "Bearer ${preferences.getString(AT, "")}")
                         .build()
-                    Log.i(TAG, request.headers.toString())
-                    Log.i(TAG, request.toString())
+
                     var response = proceed(
                         request
                     )
-                    Log.i(TAG, preferences.getString(AT, ""))
 
-                    Log.i(TAG, response.toString())
                     if (response.code == 401) {
-//                        preferences.remove(AT)
+                        preferences.remove(AT)
 
+                        val jsonRefreshRequest =
+                            JSONObject().put("refresh_token", preferences.getString(RT, ""))
+                                .toString().toByteArray()
 
-                        val jsonRequest = "{refreshToken: ${preferences.getString(RT, "")}}"
-                        val JSON = "application/json; charset=utf-8".toMediaType()
+                        val JSONTYPE = "$JSON;".toMediaType()
 
-
-                        val refreshRequest = request()
-                            .newBuilder()
-                            .post(
-                                jsonRequest
-                                    .toRequestBody(JSON)
-                            )
+                        val refreshRequest = Request.Builder()
+                            .header("Accept", JSON)
+                            .header("Content-Type", JSON)
                             .url("https://plannerok.ru/api/v1/users/refresh-token/")
+                            .post(jsonRefreshRequest.toRequestBody(JSONTYPE))
                             .build()
-                        response.close()
-                        val refreshResponse = proceed(refreshRequest)
-                        Log.i(TAG + " Refresh", refreshResponse.body?.string().toString())
-                        // {"detail":"Missing access token","body":"Missing access token"}
-//                        val tokens = api.refreshToken(RefreshTokenRequest(refreshToken = preferences.getString(RT, ""))).body()
 
-//                        if (tokens != null) {
-//                            preferences.putString(AT, tokens.accessToken)
-//                            preferences.putString(RT, tokens.refreshToken)
-//
-//                            response = proceed(
-//                                request()
-//                                    .newBuilder()
-//                                    .addHeader("Accept", "application/json")
-//                                    .addHeader("Authorization", "Bearer ${tokens.accessToken}")
-//                                    .build()
-//                            )
-//                        }
+                        response.close()
+
+                        // Я пытался через proceed, но не срабатывало
+                        val client = OkHttpClient()
+
+                        val refreshResponse = client.newCall(refreshRequest).execute()
+
+                        if (refreshResponse.isSuccessful) {
+                            val jsonResponse = JSONObject(refreshResponse.body?.string().toString())
+
+
+                            preferences.putString(AT, jsonResponse.getString(AT))
+                            preferences.putString(RT, jsonResponse.getString(RT))
+
+                            response = proceed(
+                                request()
+                                    .newBuilder()
+                                    .addHeader("Accept", JSON)
+                                    .addHeader("Authorization", "Bearer ${jsonResponse.getString(AT)}")
+                                    .build()
+                            )
+                        }
+
                     }
 
                     response
@@ -128,11 +131,3 @@ class NetworkModule {
     }
 
 }
-
-
-//@Module
-//interface AppBindsModule {
-//
-//    @Binds
-//    fun bindPlayerRepository(playerRepository: PlayerRepository): IPlayerRepository
-//}

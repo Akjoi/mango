@@ -50,6 +50,7 @@
         android:minWidth="250dp"
         android:padding="16dp"
         android:id="@+id/username"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
         android:hint="@string/user_name_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
